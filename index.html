@@ -18,115 +18,110 @@
 
 <body class="template-color-1 template-font-1">
     <div id="wrapper" class="wrapper">
-    <!-- Start Header -->
-    <header class="draven-haeder haeder-default header--transparent light-logo-version">
-      <div class="header-wrap header-height--160 paddingLeftRight--80 justify-content-between">
-        <!-- Start Header Left -->
-        <div class="header-col header-col__left">
-          <div class="logo">
-          </div>
-        </div>
-        <!-- Start Header Right -->
-        <div class="header-col header-col__full-right">
-          <div class="header-mainmenu d-none d-xl-block mr--30">
+   
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-            <!-- Start Mainmanu Nav -->
-            <nav class="mainmenu-nav">
-              <ul class="primary-menu navigation-menu--onepage">
-                <li><a href="#about">About Me</a></li>
-                <li><a href="#my_works">My Works</a></li>
-                <li><a href="#my_clients">My Clients</a></li>
-                <li><a href="#contact_us">Contact Me</a></li>
-              </ul>
-            </nav>
-            <!-- End Mainmanu Nav -->
+<!-- The overlay -->
+<div id="myNav" class="overlay">
 
-          </div>
+  <!-- Button to close the overlay navigation -->
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 
-          <div class="header-icon hamburger-menu">
-            <a class="hamburger-trigger d-none d-xl-block" href="#">
-              <i class="dlicon ui-2_menu-34"></i>
-            </a>
-            
-          </div>
-        </div>
-      </div>
-    </header>
-    <!-- Start Header -->
+  <!-- Overlay content -->
+  <div class="overlay-content">
+    <a href="#about">About Me</a>
+    <a href="#my_works">My Works</a>
+    <a href="#my_clients">My Clients</a>
+    <a href="#contact_us">Contact Me</a>
+  </div>
 
-    <!-- Start Loader Area -->
-    <div class="la-image-loading">
-      <div class="content">
-        <div class="la-loader spinner3">
-          <div class="dot1"></div>
-          <div class="dot2"></div>
-          <div class="bounce1"></div>
-          <div class="bounce2"></div>
-          <div class="bounce3"></div>
-          <div class="cube1"></div>
-          <div class="cube2"></div>
-          <div class="cube3"></div>
-          <div class="cube4"></div>
-        </div>
-      </div>
-    </div>
-    <!-- End Loader Area -->
+</div>
 
-    <!-- Start Hamburger (Bada Wala Ham)-->
-    <div class="menu-overlay">
-      <div class="hamburger-area">
-        <div class="btn-close-search">
-          <button>
-            <i class="dlicon ui-1_simple-remove"></i>
-          </button>
-        </div>
-        <div class="hamburger-menu-main d-none d-xl-block">
-          <div class="humberger-top">
-            <div class="hum-mainmenu">
-              <ul>
-                <li><a href="#about">About Me</a></li>
-                <li><a href="#my_works">My Works</a></li>
-                <li><a href="#my_clients">My Clients</a></li>
-                <li><a href="#contact_us">Contact Me</a></li>
-              </ul>
-            </div>
-          </div>
+<!-- Use any element to open/show the overlay navigation menu -->
 
-          <div class="humberger-bottom">
-            <div class="humberger-bottom__inner">
-              <div class="content">
-                <ul class="hm-address">
-                  <li><a href="tel:+917042431300"><span>(+91) 7042731300</span></a></li>
-                  <li><a href="mailto:shadajtiwari01@gmail.com"><span>shadajtiwari01@gmail.com</span></a></li>
-                </ul>
-                <div class="social-icons bg-owncolor">
-                  <a class="instagram" href="https://www.instagram.com/shadaj.tiwari"><i class="fa fa-instagram"></i></a>
-                  <a class="twitter" href="https://twitter.com/TiwariShadaj"><i class="fa fa-twitter"></i></a>
-                  <a class="linkedin" href="https://www.linkedin.com/in/shadaj-tiwari-371281188/"><i class="fa fa-linkedin"></i></a>
-                  <a class="google-plus" href="mailto:shadajtiwari01@gmail.com"><i class="fa fa-envelope"></i></a>
-                  <a class="whatsapp" href="https://api.whatsapp.com/send?phone=+917042731300&text=Hey%20Shadaj"><i class="fa fa-whatsapp"></i></a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Start Main Menu -->
-        <ul class="menu-primary-menu-1 responsive-manu d-block d-xl-none offcanvas-navigation--onepage" id="responsive-manu">
-                <li><a href="#about">About Me</a></li>
-                <li><a href="#my_works">My Works</a></li>
-                <li><a href="#my_clients">My Clients</a></li>
-                <li><a href="#contact_us">Contact Me</a></li>
-        </ul>
+    
+  
+         
+<style>
+ /* The Overlay (background) */
+.overlay {
+  /* Height & width depends on how you want to reveal the overlay (see JS below) */   
+  height: 100%;
+  width: 0;
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  background-color: rgb(0,0,0); /* Black fallback color */
+  background-color: rgba(0,0,0, 0.9); /* Black w/opacity */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
+}
 
-        <!-- End Main Menu -->
+/* Position the content inside the overlay */
+.overlay-content {
+  position: relative;
+  top: 15%; /* 25% from the top */
+  width: 100%; /* 100% width */
+  text-align: center; /* Centered text/links */
+  margin-top: 30px; /* 30px top margin to avoid conflict with the close button on smaller screens */
+}
 
-      </div>
-    </div>
-    <!-- End Hamburger -->
+/* The navigation links inside the overlay */
+.overlay a {
+  padding: 8px;
+  text-decoration: none;
+  font-size: 36px;
+  color: #818181;
+  display: block; /* Display block instead of inline */
+  transition: 0.3s; /* Transition effects on hover (color) */
+}
 
-    <!-- Start Slider Area -->
+/* When you mouse over the navigation links, change their color */
+.overlay a:hover, .overlay a:focus {
+  color: #f1f1f1;
+}
+
+/* Position the close button (top right corner) */
+.overlay .closebtn {
+  position: absolute;
+  top: 10px;
+  right: 40px;
+  font-size: 50px;
+}
+
+/* When the height of the screen is less than 450 pixels, change the font-size of the links and position the close button again, so they don't overlap */
+@media screen and (max-height: 450px) {
+  .overlay a {font-size: 20px}
+  .overlay .closebtn {
+    font-size: 40px;
+    top: 15px;
+    right: 35px;
+  }
+}
+
+</style>
+    
+<script>
+/* Open when someone clicks on the span element */
+function openNav() {
+  document.getElementById("myNav").style.width = "100%";
+}
+
+/* Close when someone clicks on the "x" symbol inside the overlay */
+function closeNav() {
+  document.getElementById("myNav").style.width = "0%";
+}
+</script>
+  
+
+<!-- Start Slider Area -->
     <div class="freelancer-slider-area fullscreen d-flex align-items-center bg_image bg_image--35 plr--90">
       <div class="freelancer-slide pt_sm--50">  
+        <span style="position: absolute;
+        top: 10px;
+        right: 40px;
+        font-size: 50px;" onclick="openNav()"><img src="hamicon.png"/></span>
         <div class="inner">
           <h1 class="theme-color" style="font-size: 45px; color: white;">I’m Shadaj <br> Tiwari</h1>
           <p class="mb--50 mt--10" style="font-size: 18px; color: white;">Passionate Full-Stack Developer, <br> who loves to code and make music.</p>
@@ -177,13 +172,13 @@
 
 
       <!-- Start Counters Area -->
-      <div class="counters-area pb--100 pb_lg--50 pt_lg--50 pb_lp--50 pt_lp--50 pt_md--30 pb_md--100 pt_sm--60 pb_sm--100 pt--160 bg-color" data-bg-color="#1f1f27">
+      <div class="counters-area pb--100 pb_lg--50 pt_lg--50 pb_lp--50 pt_lp--50 pt_md--30 pb_md--100 pt_sm--60 pb_sm--100 pt--160 bg-color" data-bg-color="#1f1f27" style="background-color: rgb(31, 31, 39);">
         <div class="row plr--150 plr_md--30 plr_sm--30 plr_lg--50">
           <!-- Start Single Counter -->
           <div class="col-lg-3 col-md-3 col-sm-6 col-12 wow move-up">
             <div class="counters counter__style--2 mt--40 text-center">
               <span class="count font--90 fontWeight500 lineheight--1" style="color: rgb(104, 104, 180);">3</span>
-              <h3 class="title text-white mb--0 font-1 fontWeight300">Years of experience</h3>
+              <h3 class="title text-light mb--0 font-1 fontWeight300">Years of experience</h3>
             </div>
           </div>
           <!-- End Single Counter -->
@@ -192,7 +187,7 @@
           <div class="col-lg-3 col-md-3 col-sm-6 col-12 wow move-up">
             <div class="counters counter__style--2 mt--40 text-center">
               <span class="count font--90 fontWeight500 lineheight--1" style="color: rgb(104, 104, 180);">13</span>
-              <h3 class="title text-white mb--0 font-1 fontWeight300">Projects done</h3>
+              <h3 class="title text-light mb--0 font-1 fontWeight300">Projects done</h3>
             </div>
           </div>
           <!-- End Single Counter -->
@@ -201,7 +196,7 @@
           <div class="col-lg-3 col-md-3 col-sm-6 col-12 wow move-up">
             <div class="counters counter__style--2 mt--40 text-center">
               <span class="count font--90 fontWeight500 lineheight--1" style="color: rgb(104, 104, 180);">250</span>
-              <h3 class="title text-white mb--0 font-1 fontWeight300">Coffees drank</h3>
+              <h3 class="title text-light mb--0 font-1 fontWeight300">Coffees drank</h3>
             </div>
           </div>
           <!-- End Single Counter -->
@@ -210,7 +205,7 @@
           <div class="col-lg-3 col-md-3 col-sm-6 col-12 wow move-up">
             <div class="counters counter__style--2 mt--40 text-center">
               <span class="count font--90 fontWeight500 lineheight--1" style="color: rgb(104, 104, 180);">1500</span>
-              <h3 class="title text-white mb--0 font-1 fontWeight300">Lines coded</h3>
+              <h3 class="title text-light mb--0 font-1 fontWeight300">Lines coded</h3>
             </div>
           </div>
           <!-- End Single Counter -->
@@ -410,7 +405,7 @@
       -->
 
       <!-- Start Brand Area -->
-      <div id="brand" class="brand-area bg-color ptb--120  ptb_md--80 ptb_sm--80" data-bg-color="#f9f9f9">
+      <div id="brand" class="brand-area bg-color ptb--120  ptb_md--80 ptb_sm--80" data-bg-color="#f9f9f9" style="background-color: rgb(238, 238, 238);">
         <div class="brand-wrapper plr--150 plr_lg--40 plr_md--40 plr_sm--30">
           <div class="row align-items-center">
             <div class="col-lg-6 col-md-12 col-12">
@@ -469,66 +464,13 @@
       </div>
       <!-- End Brand Area -->
 
-      <!-- Start Testimonial Area -->
-      <div class="testimonial-area ptb--100 ptb_lg--90 ptb_md--80 ptb_sm--80 bg-color" data-bg-color="#142F43" id="my_clients">
-        <div class="container mb--60">
-          <div class="row">
-            <div class="col-lg-12">
-              <div class="draven-element-carousel gray-dots slick-gutter-15 text-center" data-slick-options='{
-                            "spaceBetween": 15, 
-                            "slidesToShow": 1, 
-                            "slidesToScroll": 1, 
-                            "arrows": false, 
-                            "dots": true, 
-                            "infinite": true
-                        }'>
-                <!-- Start Single Testimonial -->
-                <div class="testimonial testimonial__style--5">
-                  <p class="text-white">"Thanks to Shadaj Tiwari, we've just launched our 5th website! Definitely worth the investment. If you aren't sure, always go for Shadaj Tiwari."</p>
-                  <div class="thumbnail mt--40 mt_sm--30">
-                  </div>
-                  <div class="info">
-                    <h3 class="fontWeight700 mb--5 text-white">Korrie H.</h3>
-                    <span class="fontWeight400 font--14 text-white">Founder & CEO</span>
-                    <br><span class="fontWeight400 font--14 text-white">Corious Technologies</span>
-                  </div>
-                </div>
-                <!-- End Single Testimonial -->
-
-                <!-- Start Single Testimonial -->
-                <div class="testimonial testimonial__style--5">
-                  <p class="text-white">"We have no regrets! Thank You!"</p>
-                  <div class="info">
-                    <h3 class="fontWeight700 mb--5 text-white">Bonny O.</h3>
-                    <span class="fontWeight400 font--14 text-white">IT Head</span>
-                    <br><span class="fontWeight400 font--14 text-white">GC Technologies Pvt. Ltd.</span>
-                  </div>
-                </div>
-                <!-- End Single Testimonial -->
-
-                <!-- Start Single Testimonial -->
-                <div class="testimonial testimonial__style--5">
-                  <p class="text-white">"Shadaj Tiwari is worth much more than I paid. I could probably go into sales for you. Definitely worth the investment."</p>
-                  <div class="thumbnail mt--40 mt_sm--30">
-                  </div>
-                  <div class="info">
-                    <h3 class="fontWeight700 mb--5 text-white">Saree A.</h3>
-                    <span class="fontWeight400 font--14 text-white">Chief Technical Officer</span>
-                  <br><span class="fontWeight400 font--14 text-white">4Rise Co.</span>
-                  </div>
-                </div>
-                <!-- End Single Testimonial -->
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- End Testimonial Area -->
+  
 
       <!-- Start Contact Form -->
       <section id="contact" style="padding-top: 100px; padding-bottom: 100px;">
         <div class="draven-contact-form bg-color ptb_md--60 ptb_sm--60" data-bg-color="#ffffff" id="contact_us">
           <div class="plr--180 plr_lp--50 plr_lg--50 plr_md--30 plr_lg--50 plr_sm--10">
+            <h2 class="text-center" style="padding-top: 0px; padding-bottom: 30px;">Give me a shout! I'd love to work with you.</h2>
             <div class="row align-items-center">
               <div class="col-lg-6">
                 <img height="300" width="300" src="../assets/call.png">
@@ -562,7 +504,7 @@
     <!-- End Page Wrapper -->
 
     <!-- Start Footer Area -->
-    <footer class="footer_style--2 pt--40 pb--35 bg-color" data-bg-color="#151515">
+    <footer class="footer_style--2 pt--40 pb--35 bg-color" data-bg-color="#151515" style="background-color: rgb(31, 31, 39);">
       <!-- Start Copyright Area -->
       <div class="copyright-area">
         <div class="container">
