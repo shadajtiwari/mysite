@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shadaj Tiwari — Product Manager</title>
+  <link rel="icon" href="https://api.dicebear.com/7.x/initials/svg?seed=S&backgroundColor=ffffff&textColor=EBE4E4" type="image/svg+xml"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -20,7 +21,7 @@
       --border-accent: rgba(56, 107, 248, 0.3);
       --text: #E8EDF5;
       --muted: #737b96;
-      --accent: #ee6b51;
+      --accent: #c02d2d;
       --accent2: #eb7e68;
       --gold: #F0C060;
       --glow: rgba(56,189,248,0.12);
@@ -80,123 +81,166 @@
     }
     .nav-links a:hover { color: var(--accent); }
 
-    /* HERO */
+    /* HERO — animated */
+    @keyframes blink      { 0%,100%{opacity:1} 50%{opacity:0} }
+    @keyframes scanAnim   { 0%{top:-2px} 100%{top:100%} }
+    @keyframes pulseRing  { 0%{transform:scale(1);opacity:.7} 100%{transform:scale(2.4);opacity:0} }
+    @keyframes rotateCW   { to{transform:translateY(-50%) rotate(360deg)} }
+    @keyframes rotateCCW  { to{transform:translateY(-50%) rotate(-360deg)} }
+    @keyframes glowBreath { 0%,100%{opacity:.3} 50%{opacity:.7} }
+    @keyframes cardIn     { from{opacity:0;transform:translateY(16px) scale(.93)} to{opacity:1;transform:translateY(0) scale(1)} }
+    @keyframes statusBar  { from{opacity:0} to{opacity:.45} }
+
     .hero {
       min-height: 100vh;
-      display: flex; flex-direction: column; justify-content: flex-end;
-      padding: 0 4rem 6rem;
+      display: flex; align-items: center; justify-content: flex-start;
+      padding: 0 5rem;
       position: relative;
       overflow: hidden;
+      cursor: none;
     }
-    .hero-grid-lines {
+    /* particle canvas */
+    #hero-canvas {
       position: absolute; inset: 0;
-      background-image:
-        linear-gradient(rgba(56,189,248,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(56,189,248,0.03) 1px, transparent 1px);
-      background-size: 80px 80px;
+      width: 100%; height: 100%;
+      opacity: .7; pointer-events: none;
     }
+    /* grid */
+    .hero-grid-lines {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(56,189,248,.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(56,189,248,.03) 1px,transparent 1px);
+      background-size: 60px 60px;
+    }
+    /* ambient glows */
     .hero-glow {
-      position: absolute;
-      top: -200px; right: -200px;
-      width: 700px; height: 700px;
-      background: radial-gradient(circle, rgba(56,189,248,0.08) 0%, transparent 65%);
+      position: absolute; top:-200px; right:-200px;
+      width:700px; height:700px; border-radius:50%;
+      background: radial-gradient(circle,rgba(56,189,248,.07) 0%,transparent 65%);
+      animation: glowBreath 4s ease-in-out infinite;
       pointer-events: none;
     }
     .hero-glow2 {
-      position: absolute;
-      bottom: -100px; left: 10%;
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(129,140,248,0.06) 0%, transparent 65%);
+      position: absolute; bottom:-150px; left:15%;
+      width:500px; height:500px; border-radius:50%;
+      background: radial-gradient(circle,rgba(129,140,248,.06) 0%,transparent 65%);
+      animation: glowBreath 6s ease-in-out infinite reverse;
       pointer-events: none;
     }
+    /* scanline */
+    .hero-scan {
+      position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:2;
+    }
+    .hero-scan::after {
+      content:''; position:absolute; left:0; right:0; height:2px;
+      background: linear-gradient(90deg,transparent,rgba(56,189,248,.13),transparent);
+      animation: scanAnim 5s linear infinite;
+    }
+    /* orbit rings */
+    .orbit-wrap {
+      position:absolute; right:7%; top:50%;
+      transform:translateY(-50%);
+      width:360px; height:360px;
+      pointer-events:none;
+    }
+    .orbit-cw  { position:absolute; inset:0; animation: rotateCW  30s linear infinite; transform-origin:center center; }
+    .orbit-ccw { position:absolute; inset:0; animation: rotateCCW 20s linear infinite; transform-origin:center center; }
+    /* metric cards */
+    .metric-card {
+      position:absolute; opacity:0;
+      background:rgba(13,17,27,.88);
+      backdrop-filter:blur(14px);
+      padding:14px 20px; min-width:115px;
+      pointer-events:none;
+    }
+    .metric-card.show { animation: cardIn .7s cubic-bezier(.34,1.56,.64,1) forwards; }
+    .metric-num { font-family:'DM Mono',monospace; font-size:22px; font-weight:600; line-height:1; margin-bottom:4px; }
+    .metric-lbl { font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.4); }
+    .mc-corner { position:absolute; width:8px; height:8px; }
+    /* cursor */
+    #h-cursor-dot  { position:fixed; pointer-events:none; z-index:9999; width:8px; height:8px; border-radius:50%; background:var(--accent); transform:translate(-50%,-50%); }
+    #h-cursor-ring { position:fixed; pointer-events:none; z-index:9998; width:32px; height:32px; border-radius:50%; border:1px solid rgba(56,189,248,.5); transform:translate(-50%,-50%); transition:left .12s ease,top .12s ease; }
+    /* main content */
+    .hero-content {
+      position:relative; z-index:10;
+      max-width:680px;
+      will-change:transform;
+      transition:transform .15s ease-out;
+    }
+    /* eyebrow */
     .hero-eyebrow {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
-      display: flex; align-items: center; gap: 1rem;
-      animation: fadeUp 0.8s ease both;
+      display:flex; align-items:center; gap:12px;
+      margin-bottom:20px;
+      opacity:0; animation:fadeUp .7s .2s ease forwards;
     }
-    .hero-eyebrow::before {
-      content: ''; display: block;
-      width: 40px; height: 1px;
-      background: var(--accent);
-    }
+    .pulse-wrap { position:relative; width:10px; height:10px; flex-shrink:0; }
+    .pulse-ring { position:absolute; inset:0; border-radius:50%; background:var(--accent); animation:pulseRing 1.8s ease-out infinite; }
+    .pulse-core { position:relative; width:10px; height:10px; border-radius:50%; background:var(--accent); }
+    .eyebrow-txt { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); }
+    /* name */
     .hero-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(3.5rem, 9vw, 8rem);
-      font-weight: 300;
-      line-height: 0.95;
-      letter-spacing: -0.02em;
-      color: var(--text);
-      animation: fadeUp 0.8s 0.1s ease both;
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(3.2rem,8vw,6.5rem);
+      font-weight:300; line-height:.95; letter-spacing:-.02em;
+      color:var(--text); margin-bottom:20px;
+      opacity:0; animation:fadeUp .8s .35s ease forwards;
     }
-    .hero-name em {
-      font-style: italic;
-      color: var(--accent);
+    .hero-name em { font-style:italic; color:var(--accent); }
+    /* typewriter */
+    .hero-tw-line {
+      font-family:'DM Mono',monospace;
+      font-size:clamp(.85rem,1.5vw,1.05rem);
+      min-height:28px; margin-bottom:24px;
+      opacity:0; animation:fadeUp .6s .7s ease forwards;
     }
-    .hero-title {
-      font-size: clamp(1rem, 2vw, 1.3rem);
-      font-weight: 300;
-      color: var(--muted);
-      margin-top: 1.5rem;
-      max-width: 620px;
-      animation: fadeUp 0.8s 0.2s ease both;
-      line-height: 1.6;
+    #tw-text { color:var(--accent); }
+    .tw-caret {
+      display:inline-block; width:2px; height:1em;
+      background:var(--accent); margin-left:3px;
+      vertical-align:middle; animation:blink 1s step-end infinite;
     }
+    /* description */
+    .hero-desc {
+      font-size:clamp(.9rem,1.3vw,1rem); font-weight:300;
+      color:var(--muted); line-height:1.75; max-width:520px; margin-bottom:36px;
+      opacity:0; animation:fadeUp .7s .9s ease forwards;
+    }
+    .hero-desc .gc { color:#4285F4; font-weight:700; }
+    .hero-desc .ac { color:#A855F7; font-weight:700; }
+    /* cta */
     .hero-cta {
-      display: flex; gap: 1.5rem; margin-top: 3rem;
-      animation: fadeUp 0.8s 0.3s ease both;
+      display:flex; gap:16px; flex-wrap:wrap;
+      opacity:0; animation:fadeUp .7s 1.1s ease forwards;
     }
     .btn-primary {
-      padding: 0.85rem 2rem;
-      background: var(--accent);
-      color: var(--black);
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      text-decoration: none;
-      border: none; cursor: pointer;
-      transition: all 0.2s;
+      padding:.8rem 1.8rem; background:var(--accent); color:#080A0E;
+      font-size:11px; font-family:'DM Sans',sans-serif; font-weight:600;
+      letter-spacing:.12em; text-transform:uppercase; text-decoration:none;
+      border:none; cursor:pointer; transition:all .2s;
     }
-    .btn-primary:hover { background: #a57871; transform: translateY(-2px); }
+    .btn-primary:hover { background:#7DD3FC; transform:translateY(-2px); box-shadow:0 8px 24px rgba(56,189,248,.35); }
     .btn-outline {
-      padding: 0.85rem 2rem;
-      background: transparent;
-      color: var(--text);
-      font-size: 0.78rem;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      text-decoration: none;
-      border: 1px solid var(--border-accent);
-      cursor: pointer;
-      transition: all 0.2s;
+      padding:.8rem 1.8rem; background:transparent; color:var(--text);
+      font-size:11px; font-family:'DM Sans',sans-serif; font-weight:500;
+      letter-spacing:.12em; text-transform:uppercase; text-decoration:none;
+      border:1px solid rgba(56,189,248,.3); cursor:pointer; transition:all .2s;
     }
-    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
-
-    .hero-stats {
-      position: absolute; right: 4rem; bottom: 6rem;
-      display: flex; flex-direction: column; gap: 2rem;
-      animation: fadeLeft 0.8s 0.4s ease both;
+    .btn-outline:hover { border-color:var(--accent); color:var(--accent); transform:translateY(-2px); }
+    /* divider */
+    .hero-divider {
+      display:flex; align-items:center; gap:16px; margin-top:48px;
+      opacity:0; animation:statusBar 1s 1.4s ease forwards;
     }
-    .stat { text-align: right; }
-    .stat-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.5rem;
-      font-weight: 600;
-      color: var(--accent);
-      line-height: 1;
+    .hero-divider-line { flex:1; height:1px; background:rgba(56,189,248,.2); }
+    .hero-divider-txt { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:900;}
+    /* status bar */
+    .hero-status {
+      position:absolute; bottom:28px; left:5rem; right:5rem;
+      display:flex; justify-content:space-between; align-items:center;
+      opacity:0; animation:statusBar 1s 1.6s ease forwards;
     }
-    .stat-label {
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
+    .hero-status span { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:var(--accent); }
 
     /* SECTIONS */
     section { padding: 7rem 4rem; }
@@ -519,21 +563,96 @@
       transform: translateY(0);
     }
 
-    /* RESPONSIVE */
+    /* ── TABLET (≤900px) ── */
     @media (max-width: 900px) {
-      nav { padding: 1.25rem 2rem; }
+      /* Nav */
+      nav { padding: 1.25rem 1.5rem; }
       .nav-links { display: none; }
-      section { padding: 5rem 2rem; }
-      .hero { padding: 0 2rem 5rem; }
-      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
-      .skills-grid { grid-template-columns: 1fr 1fr; }
-      .exp-item { grid-template-columns: 1fr; }
+
+      /* Sections */
+      section { padding: 4rem 1.5rem; }
+
+      /* Hero — stack vertically, remove decorative elements that overlap */
+      .hero {
+        padding: 6rem 1.5rem 5rem;
+        align-items: flex-start;
+        cursor: auto;
+        min-height: 100svh;
+      }
+      .hero-content { max-width: 100%; }
+      .orbit-wrap   { display: none; }
+      .metric-card  { display: none; }
+      .hero-status  { left: 1.5rem; right: 1.5rem; bottom: 16px; }
+      #h-cursor-dot, #h-cursor-ring { display: none; }
+
+      /* About */
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+
+      /* Experience */
+      .exp-item { grid-template-columns: 1fr; gap: 1rem; }
       .exp-item::before { display: none; }
+      .exp-meta  { padding-right: 0; }
       .exp-content { padding-left: 0; }
-      .hero-stats { display: none; }
+
+      /* Skills */
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+
+      /* Certs */
       .cert-grid { grid-template-columns: 1fr; }
+
+      /* Education */
       .edu-grid { grid-template-columns: 1fr; }
-      footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+
+      /* Footer */
+      footer { flex-direction: column; gap: 1.5rem; text-align: center; padding: 2rem 1.5rem; }
+    }
+
+    /* ── MOBILE (≤480px) ── */
+    @media (max-width: 480px) {
+      /* Nav */
+      nav { padding: 1rem 1.25rem; }
+
+      /* Sections */
+      section { padding: 3.5rem 1.25rem; }
+
+      /* Hero */
+      .hero {
+        padding: 5.5rem 1.25rem 4rem;
+        min-height: 100svh;
+      }
+      .hero-name  { font-size: clamp(2.8rem, 14vw, 4rem); }
+      .hero-divider { margin-top: 28px; }
+      .hero-cta   { flex-direction: column; gap: 12px; }
+      .btn-primary,
+      .btn-outline { text-align: center; padding: .85rem 1.5rem; }
+      .hero-status { display: none; }
+      .eyebrow-txt { font-size: 9.5px; }
+
+      /* Experience */
+      .exp-company { font-size: 1.15rem; }
+      .exp-item { padding: 2rem 0; }
+
+      /* Skills — single column on very small screens */
+      .skills-grid { grid-template-columns: 1fr; }
+
+      /* Skill card */
+      .skill-card { padding: 1.5rem; }
+
+      /* Section titles */
+      .section-title { font-size: clamp(1.8rem, 8vw, 2.5rem); margin-bottom: 2rem; }
+
+      /* About text */
+      .about-text p { font-size: .95rem; }
+
+      /* Cert cards */
+      .cert-card { padding: 1.25rem; }
+
+      /* Edu cards */
+      .edu-card { padding: 1.75rem 1.5rem; }
+
+      /* Footer */
+      footer { padding: 2rem 1.25rem; gap: 1rem; }
+      .footer-links { flex-wrap: wrap; justify-content: center; gap: 1.25rem; }
     }
   </style>
 </head>
@@ -591,36 +710,207 @@
       );
     }
 
-    function Hero() {
+    // ── Typewriter hook ──────────────────────────────────────────────────────
+    function useTypewriter(words, speed=75, pause=2100) {
+      const [text, setText] = React.useState('');
+      const state = React.useRef({ wi:0, ci:0, del:false });
+      React.useEffect(() => {
+        let t;
+        const tick = () => {
+          const { wi, ci, del } = state.current;
+          const word = words[wi];
+          if (!del && ci < word.length) {
+            setText(word.slice(0, ci+1));
+            state.current.ci++;
+            t = setTimeout(tick, speed);
+          } else if (!del && ci === word.length) {
+            t = setTimeout(() => { state.current.del = true; tick(); }, pause);
+          } else if (del && ci > 0) {
+            setText(word.slice(0, ci-1));
+            state.current.ci--;
+            t = setTimeout(tick, speed/2);
+          } else {
+            state.current.del = false;
+            state.current.wi = (wi+1) % words.length;
+            t = setTimeout(tick, 200);
+          }
+        };
+        t = setTimeout(tick, 800);
+        return () => clearTimeout(t);
+      }, []);
+      return text;
+    }
+
+    // ── Particle canvas ──────────────────────────────────────────────────────
+    function ParticleCanvas() {
+      const canvasRef = React.useRef(null);
+      const mouse = React.useRef({ x: null, y: null });
+      React.useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        let W, H, raf;
+        const resize = () => { W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; };
+        resize();
+        window.addEventListener('resize', resize);
+        const pts = Array.from({length:85}, () => ({
+          x: Math.random()*1000, y: Math.random()*700,
+          vx:(Math.random()-.5)*.28, vy:(Math.random()-.5)*.28,
+          r: Math.random()*1.4+.4, a: Math.random()*.45+.18
+        }));
+        const draw = () => {
+          ctx.clearRect(0,0,W,H);
+          const mx=mouse.current.x, my=mouse.current.y;
+          pts.forEach(p => {
+            if(mx&&my){ const dx=p.x-mx,dy=p.y-my,d=Math.hypot(dx,dy); if(d<110){ p.vx+=(dx/d)*.038; p.vy+=(dy/d)*.038; } }
+            p.vx*=.99; p.vy*=.99; p.x+=p.vx; p.y+=p.vy;
+            if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+          });
+          for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
+            const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.hypot(dx,dy);
+            if(d<95){ ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y);
+              ctx.strokeStyle=`rgba(56,189,248,${.11*(1-d/95)})`; ctx.lineWidth=.6; ctx.stroke(); }
+          }
+          pts.forEach(p=>{ ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=`rgba(56,189,248,${p.a})`; ctx.fill(); });
+          raf = requestAnimationFrame(draw);
+        };
+        draw();
+        const heroEl = canvas.parentElement;
+        const mm = e => { const r=heroEl.getBoundingClientRect(); mouse.current={x:e.clientX-r.left,y:e.clientY-r.top}; };
+        const ml = () => { mouse.current={x:null,y:null}; };
+        heroEl.addEventListener('mousemove', mm);
+        heroEl.addEventListener('mouseleave', ml);
+        return () => { cancelAnimationFrame(raf); window.removeEventListener('resize',resize); heroEl.removeEventListener('mousemove',mm); heroEl.removeEventListener('mouseleave',ml); };
+      }, []);
+      return <canvas ref={canvasRef} id="hero-canvas"/>;
+    }
+
+    // ── Metric card ──────────────────────────────────────────────────────────
+    function MetricCard({ value, label, color, delay, style }) {
+      const [show, setShow] = React.useState(false);
+      React.useEffect(() => { const t = setTimeout(()=>setShow(true), delay); return ()=>clearTimeout(t); }, [delay]);
+      const b = `1px solid ${color}44`;
       return (
-        <section className="hero">
+        <div className={`metric-card${show?' show':''}`} style={{border:b, boxShadow:`0 0 28px ${color}16`, ...style}}>
+          <div className="metric-num" style={{color}}>{value}</div>
+          <div className="metric-lbl">{label}</div>
+          {[{top:0,left:0,borderTop:`1px solid ${color}`,borderLeft:`1px solid ${color}`},
+            {top:0,right:0,borderTop:`1px solid ${color}`,borderRight:`1px solid ${color}`},
+            {bottom:0,left:0,borderBottom:`1px solid ${color}`,borderLeft:`1px solid ${color}`},
+            {bottom:0,right:0,borderBottom:`1px solid ${color}`,borderRight:`1px solid ${color}`}
+          ].map((s,i)=><div key={i} className="mc-corner" style={s}/>)}
+        </div>
+      );
+    }
+
+    // ── Hero ─────────────────────────────────────────────────────────────────
+    function Hero() {
+      const tw = useTypewriter(['Product Manager','AI/ML SaaS Products','Google Cloud Architect']);
+      const heroRef = React.useRef(null);
+      const dotRef  = React.useRef(null);
+      const ringRef = React.useRef(null);
+      const contentRef = React.useRef(null);
+      const ringPos = React.useRef({x:-100,y:-100});
+
+      React.useEffect(() => {
+        const hero = heroRef.current;
+        const dot  = dotRef.current;
+        const ring = ringRef.current;
+        let raf;
+        const animRing = () => {
+          const rp = ringPos.current;
+          // ring chases dot smoothly via CSS transition — nothing needed here
+          raf = requestAnimationFrame(animRing);
+        };
+        raf = requestAnimationFrame(animRing);
+        const mm = e => {
+          const r = hero.getBoundingClientRect();
+          const x = e.clientX, y = e.clientY;
+          dot.style.left  = x+'px'; dot.style.top = y+'px';
+          ring.style.left = x+'px'; ring.style.top= y+'px';
+          // tilt
+          const cx = r.left+r.width/2, cy = r.top+r.height/2;
+          const tx = ((e.clientY-cy)/r.height)*5;
+          const ty = -((e.clientX-cx)/r.width)*5;
+          contentRef.current.style.transform = `perspective(900px) rotateX(${tx}deg) rotateY(${ty}deg)`;
+        };
+        const ml = () => { contentRef.current.style.transform='none'; };
+        hero.addEventListener('mousemove', mm);
+        hero.addEventListener('mouseleave', ml);
+        return () => { cancelAnimationFrame(raf); hero.removeEventListener('mousemove',mm); hero.removeEventListener('mouseleave',ml); };
+      }, []);
+
+      return (
+        <section className="hero" ref={heroRef}>
+          {/* bg layers */}
+          <ParticleCanvas/>
           <div className="hero-grid-lines"/>
           <div className="hero-glow"/>
           <div className="hero-glow2"/>
-          <div className="hero-eyebrow">Product Manager · AI/ML · Cloud</div>
-          <h1 className="hero-name">
-            Shadaj<br/><em>Tiwari</em>
-          </h1>
-          <p className="hero-title">
-            Product Manager at Google for Accenture — building scalable, AI-first SaaS products across Google Flights, Google Pay &amp; Google Ads.
-          </p>
-          <div className="hero-cta">
-            <a className="btn-primary" href="#experience">View Work</a>
-            <a className="btn-outline" href="mailto:shadajtiwari01@gmail.com">Get in Touch</a>
+          <div className="hero-scan"/>
+
+          {/* orbit rings */}
+          <div className="orbit-wrap">
+            <div className="orbit-cw">
+              <svg viewBox="0 0 360 360" fill="none" style={{position:'absolute',inset:0,width:'100%',height:'100%',opacity:.18}}>
+                <circle cx="180" cy="180" r="170" stroke="#38BDF8" strokeWidth="1" strokeDasharray="6 10"/>
+                <circle cx="180" cy="180" r="125" stroke="#818CF8" strokeWidth=".8" strokeDasharray="4 14"/>
+              </svg>
+            </div>
+            <div className="orbit-ccw">
+              <svg viewBox="0 0 360 360" fill="none" style={{position:'absolute',inset:0,width:'100%',height:'100%',opacity:.28}}>
+                <circle cx="180" cy="180" r="80" stroke="#F0C060" strokeWidth=".6" strokeDasharray="2 18"/>
+                {[0,60,120,180,240,300].map((deg,i)=>{
+                  const rad=(deg*Math.PI)/180;
+                  return <circle key={i} cx={180+170*Math.cos(rad)} cy={180+170*Math.sin(rad)} r="3.5" fill="#38BDF8" opacity=".85"/>;
+                })}
+              </svg>
+            </div>
           </div>
-          <div className="hero-stats">
-            <div className="stat">
-              <div className="stat-num">3.5+</div>
-              <div className="stat-label">Years Experience</div>
+
+          {/* metric cards */}
+          <MetricCard value="3.5+" label="Years @ Google" color="#38BDF8" delay={1400} style={{right:'28%',top:'20%'}}/>
+          <MetricCard value="AI/ML"  label="Saas products"       color="#818CF8" delay={1700} style={{right:'9%', top:'40%'}}/>
+          <MetricCard value="25+"  label="Projects delivered"    color="#F0C060" delay={2000} style={{right:'26%',top:'67%'}}/>
+
+          {/* cursors */}
+          <div id="h-cursor-dot"  ref={dotRef}/>
+          <div id="h-cursor-ring" ref={ringRef}/>
+
+          {/* content */}
+          <div className="hero-content" ref={contentRef}>
+            <div className="hero-eyebrow">
+              <div className="pulse-wrap"><div className="pulse-ring"/><div className="pulse-core"/></div>
+              <span className="eyebrow-txt">For Product Leadership Roles</span>
             </div>
-            <div className="stat">
-              <div className="stat-num">10+</div>
-              <div className="stat-label">Team Members Led</div>
+
+            <h1 className="hero-name">Shadaj<br/><em>Tiwari</em></h1>
+
+            <div className="hero-tw-line">
+              <span id="tw-text">{tw}</span><span className="tw-caret"/>
             </div>
-            <div className="stat">
-              <div className="stat-num">AI</div>
-              <div className="stat-label">First approach</div>
+
+            <p className="hero-desc">
+              Building scalable, AI-first SaaS products at <span className="gc">Google</span> for <span className="ac">Accenture</span> —
+              driving platform reliability, user growth, and measurable business impact across mutiple IT products.
+            </p>
+
+            <div className="hero-cta">
+              <a className="btn-primary" href="#experience">View Work</a>
+              <a className="btn-outline" href="mailto:shadajtiwari01@gmail.com">Get in Touch</a>
             </div>
+
+            <div className="hero-divider">
+              <div className="hero-divider-line"/>
+              <span className="hero-divider-txt">Google Flights · Pay · Ads</span>
+              <div className="hero-divider-line"/>
+            </div>
+          </div>
+
+          {/* status bar */}
+          <div className="hero-status">
+            <span>Gurugram, IN</span>
+            <span>Open to Work</span>
+            <span>3.5+ YOE</span>
           </div>
         </section>
       );
@@ -637,7 +927,7 @@
             <FadeIn delay={100}>
               <div className="about-text">
                 <p>
-                  Product leader with 3+ years of experience building and scaling SaaS products across large-scale B2C and B2B ecosystems. Currently a Product Specialist at Google (for Accenture), working on cloud-native platforms including Google Flights, Google Pay, and Google Ads.
+                  Product leader with 3.5+ years of experience building and scaling SaaS products across large-scale B2C and B2B ecosystems. Currently a Product Specialist at Google (for Accenture), working on cloud-native platforms including Google Flights, Google Pay, and Google Ads.
                 </p>
                 <p>
                   My experience spans the end-to-end SaaS product lifecycle — from problem discovery and roadmap definition to execution, launch, and continuous optimization. I have led initiatives involving ML-powered quality monitoring, intelligent automation, and platform performance optimization, including sub-second latency improvements on high-traffic, globally distributed systems.
@@ -815,14 +1105,12 @@
 
     function Certifications() {
       const certs = [
-        { icon: '📋', name: 'Project Management Professional (PMP)', org: 'PMI' },
         { icon: '☁️', name: 'Google Cloud Professional Architect & Engineer', org: 'Google' },
         { icon: '🐍', name: 'Python Developer Certification', org: 'Google' },
+        { icon: '📄', name: 'Google Project Management Certification', org: 'Google' },
+        { icon: '🔬', name: 'Research Paper: Aerial Surveillance Quadcopter', org: 'Advances in Computational Intelligence, Vol. 3283, 2022' },
         { icon: '🌩️', name: 'AWS Certified Cloud Practitioner', org: 'Amazon Web Services' },
         { icon: '🌐', name: 'Introduction to IoT & Networking', org: 'Cisco Networking Academy' },
-        { icon: '📄', name: 'Google Project Management Certification', org: 'Google' },
-        { icon: '🎸', name: 'Specialist in Rock and Pop Guitar', org: 'Rockschool' },
-        { icon: '🔬', name: 'Research Paper: Aerial Surveillance Quadcopter', org: 'Advances in Computational Intelligence, Vol. 3283, 2022' },
       ];
       return (
         <section id="certifications">
