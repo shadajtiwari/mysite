@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shadaj Tiwari — Product Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #080A0E;
+      --surface: #0D1117;
+      --surface2: #131820;
+      --border: rgba(255,255,255,0.06);
+      --border-accent: rgba(56, 107, 248, 0.3);
+      --text: #E8EDF5;
+      --muted: #737b96;
+      --accent: #ee6b51;
+      --accent2: #eb7e68;
+      --gold: #F0C060;
+      --glow: rgba(56,189,248,0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 999; opacity: 0.4;
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 4rem;
+      background: rgba(8,10,14,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 4rem 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-grid-lines {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(56,189,248,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56,189,248,0.03) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+    .hero-glow {
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(56,189,248,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-glow2 {
+      position: absolute;
+      bottom: -100px; left: 10%;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(129,140,248,0.06) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+      animation: fadeUp 0.8s ease both;
+    }
+    .hero-eyebrow::before {
+      content: ''; display: block;
+      width: 40px; height: 1px;
+      background: var(--accent);
+    }
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+    .hero-name em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .hero-title {
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      font-weight: 300;
+      color: var(--muted);
+      margin-top: 1.5rem;
+      max-width: 620px;
+      animation: fadeUp 0.8s 0.2s ease both;
+      line-height: 1.6;
+    }
+    .hero-cta {
+      display: flex; gap: 1.5rem; margin-top: 3rem;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
+    .btn-primary {
+      padding: 0.85rem 2rem;
+      background: var(--accent);
+      color: var(--black);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover { background: #a57871; transform: translateY(-2px); }
+    .btn-outline {
+      padding: 0.85rem 2rem;
+      background: transparent;
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid var(--border-accent);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+    .hero-stats {
+      position: absolute; right: 4rem; bottom: 6rem;
+      display: flex; flex-direction: column; gap: 2rem;
+      animation: fadeLeft 0.8s 0.4s ease both;
+    }
+    .stat { text-align: right; }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* SECTIONS */
+    section { padding: 7rem 4rem; }
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .section-label::after {
+      content: ''; flex: 1;
+      height: 1px; background: var(--border);
+      max-width: 80px;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 3rem;
+    }
+    .section-title em { font-style: italic; color: var(--accent); }
+
+    /* ABOUT */
+    #about { background: var(--surface); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: start;
+    }
+    .about-text p {
+      color: #A8B5CC;
+      font-size: 1rem;
+      line-height: 1.85;
+      margin-bottom: 1.5rem;
+    }
+    .about-text p:first-child {
+      font-size: 1.15rem;
+      color: var(--text);
+    }
+    .about-side { display: flex; flex-direction: column; gap: 2rem; }
+    .contact-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      transition: border-color 0.2s;
+    }
+    .contact-item:hover { border-color: var(--border-accent); }
+    .contact-icon { color: var(--accent); font-size: 1.2rem; width: 20px; text-align: center; }
+    .contact-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+    .contact-value { font-size: 0.9rem; color: var(--text); }
+    .contact-value a { color: var(--accent); text-decoration: none; }
+    .contact-value a:hover { text-decoration: underline; }
+
+    /* EXPERIENCE */
+    #experience { background: var(--black); }
+    .exp-timeline { display: flex; flex-direction: column; gap: 0; }
+    .exp-item {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 3rem;
+      padding: 3rem 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .exp-item:first-child { padding-top: 0; }
+    .exp-item::before {
+      content: '';
+      position: absolute; left: 240px;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: var(--border);
+    }
+    .exp-meta { padding-right: 3rem; }
+    .exp-company {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .exp-period {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+    .exp-location {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .exp-content { padding-left: 3rem; }
+    .exp-role {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .role-badge {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      background: rgba(56,189,248,0.1);
+      color: var(--accent);
+      border: 1px solid rgba(56,189,248,0.2);
+    }
+    .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+    .exp-bullets li {
+      font-size: 0.92rem;
+      color: #94A3B8;
+      padding-left: 1.25rem;
+      position: relative;
+      line-height: 1.65;
+    }
+    .exp-bullets li::before {
+      content: '▸';
+      position: absolute; left: 0;
+      color: var(--accent);
+      font-size: 0.7rem;
+      top: 0.3rem;
+    }
+    .exp-bullets li strong { color: var(--text); font-weight: 500; }
+    .exp-sub-role {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* SKILLS */
+    #skills { background: var(--surface); }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .skill-card {
+      padding: 2rem;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+    .skill-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .skill-card::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .skill-card:hover::after { transform: scaleX(1); }
+    .skill-card-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+    .skill-card-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .skill-tag {
+      font-size: 0.78rem;
+      padding: 0.3rem 0.75rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: #94A3B8;
+      transition: all 0.2s;
+    }
+    .skill-tag:hover {
+      background: rgba(56,189,248,0.08);
+      border-color: rgba(56,189,248,0.3);
+      color: var(--accent);
+    }
+
+    /* CERTIFICATIONS */
+    #certifications { background: var(--black); }
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+    .cert-card {
+      display: flex; align-items: flex-start; gap: 1.25rem;
+      padding: 1.75rem 2rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: all 0.25s;
+    }
+    .cert-card:hover {
+      border-color: var(--border-accent);
+      background: var(--surface2);
+    }
+    .cert-icon {
+      width: 42px; height: 42px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(56,189,248,0.08);
+      border: 1px solid rgba(56,189,248,0.15);
+      color: var(--accent);
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .cert-name {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+    .cert-org {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    /* EDUCATION */
+    #education { background: var(--surface); }
+    .edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .edu-card {
+      padding: 2.5rem;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+    .edu-card:hover { border-color: var(--border-accent); }
+    .edu-card-accent {
+      position: absolute; top: 0; left: 0;
+      width: 4px; height: 100%;
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+    }
+    .edu-year {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
+    .edu-degree {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .edu-school { font-size: 0.9rem; color: var(--muted); }
+
+    /* AWARDS */
+    #awards { background: var(--black); }
+    .awards-row { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .award-pill {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 1rem 1.75rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: all 0.25s;
+    }
+    .award-pill:hover {
+      border-color: rgba(240,192,96,0.4);
+      background: rgba(240,192,96,0.05);
+    }
+    .award-icon { color: var(--gold); font-size: 1.1rem; }
+    .award-text { font-size: 0.9rem; color: var(--text); }
+
+    /* FOOTER */
+    footer {
+      padding: 3rem 4rem;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--black);
+    }
+    .footer-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--muted);
+    }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeLeft {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 1.25rem 2rem; }
+      .nav-links { display: none; }
+      section { padding: 5rem 2rem; }
+      .hero { padding: 0 2rem 5rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+      .exp-item { grid-template-columns: 1fr; }
+      .exp-item::before { display: none; }
+      .exp-content { padding-left: 0; }
+      .hero-stats { display: none; }
+      .cert-grid { grid-template-columns: 1fr; }
+      .edu-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    function useFadeIn() {
+      const ref = useRef(null);
+      useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+        const obs = new IntersectionObserver(
+          ([entry]) => { if (entry.isIntersecting) { el.classList.add('visible'); obs.unobserve(el); } },
+          { threshold: 0.1 }
+        );
+        obs.observe(el);
+        return () => obs.disconnect();
+      }, []);
+      return ref;
+    }
+
+    function FadeIn({ children, delay = 0 }) {
+      const ref = useRef(null);
+      useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+        const obs = new IntersectionObserver(
+          ([entry]) => { if (entry.isIntersecting) { setTimeout(() => el.classList.add('visible'), delay); obs.unobserve(el); } },
+          { threshold: 0.08 }
+        );
+        obs.observe(el);
+        return () => obs.disconnect();
+      }, [delay]);
+      return <div ref={ref} className="fade-in">{children}</div>;
+    }
+
+    function Nav() {
+      const [scrolled, setScrolled] = useState(false);
+      useEffect(() => {
+        const h = () => setScrolled(window.scrollY > 50);
+        window.addEventListener('scroll', h);
+        return () => window.removeEventListener('scroll', h);
+      }, []);
+      return (
+        <nav style={{ boxShadow: scrolled ? '0 4px 30px rgba(0,0,0,0.4)' : 'none' }}>
+          <a className="nav-logo" href="#">Shadaj <span>Tiwari</span></a>
+          <ul className="nav-links">
+            {['about','experience','skills','certifications','education'].map(s => (
+              <li key={s}><a href={`#${s}`}>{s}</a></li>
+            ))}
+          </ul>
+        </nav>
+      );
+    }
+
+    function Hero() {
+      return (
+        <section className="hero">
+          <div className="hero-grid-lines"/>
+          <div className="hero-glow"/>
+          <div className="hero-glow2"/>
+          <div className="hero-eyebrow">Product Manager · AI/ML · Cloud</div>
+          <h1 className="hero-name">
+            Shadaj<br/><em>Tiwari</em>
+          </h1>
+          <p className="hero-title">
+            Product Manager at Google for Accenture — building scalable, AI-first SaaS products across Google Flights, Google Pay &amp; Google Ads.
+          </p>
+          <div className="hero-cta">
+            <a className="btn-primary" href="#experience">View Work</a>
+            <a className="btn-outline" href="mailto:shadajtiwari01@gmail.com">Get in Touch</a>
+          </div>
+          <div className="hero-stats">
+            <div className="stat">
+              <div className="stat-num">3.5+</div>
+              <div className="stat-label">Years Experience</div>
+            </div>
+            <div className="stat">
+              <div className="stat-num">10+</div>
+              <div className="stat-label">Team Members Led</div>
+            </div>
+            <div className="stat">
+              <div className="stat-num">AI</div>
+              <div className="stat-label">First approach</div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function About() {
+      return (
+        <section id="about">
+          <FadeIn>
+            <div className="section-label">01 / About</div>
+            <h2 className="section-title">Building products that<br/><em>scale &amp; endure</em></h2>
+          </FadeIn>
+          <div className="about-grid">
+            <FadeIn delay={100}>
+              <div className="about-text">
+                <p>
+                  Product leader with 3+ years of experience building and scaling SaaS products across large-scale B2C and B2B ecosystems. Currently a Product Specialist at Google (for Accenture), working on cloud-native platforms including Google Flights, Google Pay, and Google Ads.
+                </p>
+                <p>
+                  My experience spans the end-to-end SaaS product lifecycle — from problem discovery and roadmap definition to execution, launch, and continuous optimization. I have led initiatives involving ML-powered quality monitoring, intelligent automation, and platform performance optimization, including sub-second latency improvements on high-traffic, globally distributed systems.
+                </p>
+                <p>
+                  I am a Certified Google Cloud Professional Architect with hands-on expertise in cloud architecture, DevOps practices, and scalable SaaS system design. I actively leverage cloud and AI/ML capabilities to move ideas rapidly from ideation to MVP and into production, with a strong focus on reliability, security, and long-term platform growth.
+                </p>
+              </div>
+            </FadeIn>
+            <FadeIn delay={200}>
+              <div className="about-side">
+                {[
+                  { icon: '📞', label: 'Phone', value: '+91 7042731300', href: 'tel:+917042731300' },
+                  { icon: '✉', label: 'Email', value: 'shadajtiwari01@gmail.com', href: 'mailto:shadajtiwari01@gmail.com' },
+                  { icon: '🔗', label: 'LinkedIn', value: 'linkedin.com/in/shadaj-tiwari', href: 'https://www.linkedin.com/in/shadaj-tiwari' },
+                  { icon: '📍', label: 'Location', value: 'Gurugram, Haryana, India', href: null },
+                ].map(({ icon, label, value, href }) => (
+                  <div className="contact-item" key={label}>
+                    <span className="contact-icon">{icon}</span>
+                    <div>
+                      <div className="contact-label">{label}</div>
+                      <div className="contact-value">
+                        {href ? <a href={href} target="_blank" rel="noopener">{value}</a> : value}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </FadeIn>
+          </div>
+        </section>
+      );
+    }
+
+    function Experience() {
+      const jobs = [
+        {
+          company: 'Accenture × Google',
+          location: 'Gurugram, Haryana, India',
+          roles: [
+            {
+              title: 'Associate Product Manager',
+              period: 'May 2024 – Present',
+              badge: 'Current',
+              bullets: [
+               'Implemented an <strong>ML algorithm</strong> to suppress results with price inaccuracies exceeding 2%, improving data integrity and user trust by ensuring accurate and reliable pricing.',
+'Lead a cross-functional team of <strong>10+ professionals</strong> to drive product strategies, improving platform reliability and reducing service downtime by <strong>20% through proactive optimization</strong> and monitoring.',
+'Promote and launch new features for Google Flights, collaborating with <strong>engineering, marketing, and design teams</strong> to drive feature adoption and enhance user experience through data-driven decisions.',
+'Increase user engagement <strong>by 15%</strong> through the design and implementation of innovative product solutions, leading to higher click-through rates and longer session durations.',
+'Optimize pricing strategies in collaboration with analytics and business teams, resulting in a <strong>10% revenue</strong> increase by aligning product offerings with market demand.',
+'Demonstrate an <strong>AI-first and engineering-first </strong>mindset, leveraging machine learning, data analytics, and collaborative engineering to optimize product performance and drive business impact.'
+              ]
+            },
+            {
+              title: 'Associate Product Engineer',
+              period: 'Aug 2022 - May 2024',
+              badge: null,
+              bullets: [
+                'Worked on the <strong>Google Flights</strong> project — enhancing and optimizing one of Google\'s key product offerings.',
+                'Led a high-performing team of <strong>10+ professionals</strong>, reducing client website downtime by <strong>20%</strong> through proactive monitoring.',
+                'Increased online user engagement by <strong>15%</strong> through innovative solutions, boosting CTR and session durations.',
+                'Implemented ML algorithm to suppress price inaccuracies exceeding 2%, improving data integrity and user trust.',
+                'Optimized pricing strategies with cross-functional teams, driving a <strong>10% increase in online sales revenue</strong>.',
+                'Spearheaded website performance initiatives — achieving a <strong>25% increase in organic traffic</strong> and 12% reduction in bounce rates.',
+                'Improved ad campaign ROI by <strong>30%</strong> and overall conversion rates by <strong>20%</strong> via data-driven insights.',
+              ]
+            }
+          ]
+        },
+        {
+          company: 'StackBird Technologies',
+          location: 'Noida, Uttar Pradesh, India',
+          roles: [
+            {
+              title: 'Full Stack Developer',
+              period: 'Mar 2022 – Aug 2022',
+              badge: null,
+              bullets: [
+                'Integrated sustainability practices into project planning and execution.',
+                'Implemented cost-effective solutions without compromising quality or performance.',
+                'Negotiated contracts and SLAs to meet project requirements.',
+                'Utilized analytics tools to track and report on key performance indicators.',
+              ]
+            }
+          ]
+        },
+        {
+          company: 'NTPC Limited',
+          location: 'NTPC Dadri',
+          roles: [
+            {
+              title: 'Engineering Intern',
+              period: 'May 2021 – Jul 2021',
+              badge: null,
+              bullets: [
+                'Learned thermal power plant operations and optimized electronic systems.',
+                'Worked with various tools and systems to optimize overall power generation.',
+                'Resolved electronic system issues for better operational performance.',
+              ]
+            }
+          ]
+        }
+      ];
+
+      return (
+        <section id="experience">
+          <FadeIn>
+            <div className="section-label">02 / Experience</div>
+            <h2 className="section-title">Where I've<br/><em>made impact</em></h2>
+          </FadeIn>
+          <div className="exp-timeline">
+            {jobs.map((job, ji) => (
+              <FadeIn key={ji} delay={ji * 100}>
+                <div className="exp-item">
+                  <div className="exp-meta">
+                    <div className="exp-company">{job.company}</div>
+                    <div className="exp-period">{job.roles[0].period}</div>
+                    <div className="exp-location">{job.location}</div>
+                  </div>
+                  <div className="exp-content">
+                    {job.roles.map((role, ri) => (
+                      <div key={ri} className={ri > 0 ? 'exp-sub-role' : ''}>
+                        <div className="exp-role">
+                          {role.title}
+                          {role.badge && <span className="role-badge">{role.badge}</span>}
+                        </div>
+                        {ri > 0 && <div className="exp-period" style={{marginBottom:'1rem'}}>{role.period}</div>}
+                        <ul className="exp-bullets">
+                          {role.bullets.map((b, bi) => (
+                            <li key={bi} dangerouslySetInnerHTML={{__html: b}}/>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    function Skills() {
+      const cats = [
+        { icon: '⚙️', title: 'Product', tags: ['Product Lifecycle Mgmt', 'Roadmap Definition', 'AI/ML Product Strategy', 'B2B & B2C SaaS', 'Data-Driven Decisions', 'A/B Testing'] },
+        { icon: '☁️', title: 'Cloud & DevOps', tags: ['Google Cloud Platform', 'AWS', 'Microsoft Azure', 'Docker', 'Kubernetes', 'Jenkins', 'Git'] },
+        { icon: '💻', title: 'Engineering', tags: ['Python', 'C/C++', 'JavaScript', 'React.js', 'Node.js', 'HTML/CSS', 'PHP'] },
+        { icon: '📊', title: 'Data & Analytics', tags: ['SQL', 'Machine Learning', 'Data Analytics', 'ML Algorithm Design', 'Performance Monitoring'] },
+        { icon: '🛠️', title: 'Tools & Platforms', tags: ['Oracle Apex', 'WSO2 API Manager', 'Microsoft Power Apps', 'Google Workspace'] },
+        { icon: '🤝', title: 'Leadership', tags: ['Cross-functional Teams', 'Mentoring', 'Client Management', 'Stakeholder Alignment', 'Problem Solving'] },
+      ];
+      return (
+        <section id="skills">
+          <FadeIn>
+            <div className="section-label">03 / Skills</div>
+            <h2 className="section-title">Technical &amp;<br/><em>product expertise</em></h2>
+          </FadeIn>
+          <div className="skills-grid">
+            {cats.map((c, i) => (
+              <FadeIn key={i} delay={i * 60}>
+                <div className="skill-card">
+                  <div className="skill-card-icon">{c.icon}</div>
+                  <div className="skill-card-title">{c.title}</div>
+                  <div className="skill-tags">
+                    {c.tags.map(t => <span key={t} className="skill-tag">{t}</span>)}
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    function Certifications() {
+      const certs = [
+        { icon: '📋', name: 'Project Management Professional (PMP)', org: 'PMI' },
+        { icon: '☁️', name: 'Google Cloud Professional Architect & Engineer', org: 'Google' },
+        { icon: '🐍', name: 'Python Developer Certification', org: 'Google' },
+        { icon: '🌩️', name: 'AWS Certified Cloud Practitioner', org: 'Amazon Web Services' },
+        { icon: '🌐', name: 'Introduction to IoT & Networking', org: 'Cisco Networking Academy' },
+        { icon: '📄', name: 'Google Project Management Certification', org: 'Google' },
+        { icon: '🎸', name: 'Specialist in Rock and Pop Guitar', org: 'Rockschool' },
+        { icon: '🔬', name: 'Research Paper: Aerial Surveillance Quadcopter', org: 'Advances in Computational Intelligence, Vol. 3283, 2022' },
+      ];
+      return (
+        <section id="certifications">
+          <FadeIn>
+            <div className="section-label">04 / Certifications & Publications</div>
+            <h2 className="section-title">Credentials &amp;<br/><em>recognition</em></h2>
+          </FadeIn>
+          <div className="cert-grid">
+            {certs.map((c, i) => (
+              <FadeIn key={i} delay={i * 50}>
+                <div className="cert-card">
+                  <div className="cert-icon">{c.icon}</div>
+                  <div>
+                    <div className="cert-name">{c.name}</div>
+                    <div className="cert-org">{c.org}</div>
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    function Education() {
+      return (
+        <section id="education">
+          <FadeIn>
+            <div className="section-label">05 / Education</div>
+            <h2 className="section-title">Academic<br/><em>foundation</em></h2>
+          </FadeIn>
+          <div className="edu-grid">
+            {[
+              { year: 'Jun 2018 – Aug 2022', degree: 'Bachelor of Technology', field: 'Electronics & Communication Engineering', school: 'Dr. A.P.J. Abdul Kalam Technical University' },
+              { year: 'Mar 2015 – Mar 2018', degree: 'Senior Secondary & High School', field: '10th & 12th Standard', school: 'Delhi Public School, NTPC Vidyut Nagar' },
+            ].map((e, i) => (
+              <FadeIn key={i} delay={i * 100}>
+                <div className="edu-card">
+                  <div className="edu-card-accent"/>
+                  <div className="edu-year">{e.year}</div>
+                  <div className="edu-degree">{e.degree}</div>
+                  <div style={{color:'var(--accent)', fontSize:'0.9rem', marginBottom:'0.5rem'}}>{e.field}</div>
+                  <div className="edu-school">{e.school}</div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+
+        </section>
+      );
+    }
+
+    function Footer() {
+      return (
+        <footer>
+          <div className="footer-name">© 2025 | Made with Love by Shadaj Tiwari</div>
+          <div className="footer-links">
+            <a href="mailto:shadajtiwari01@gmail.com">Email</a>
+            <a href="https://www.linkedin.com/in/shadaj-tiwari" target="_blank" rel="noopener">LinkedIn</a>
+          </div>
+        </footer>
+      );
+    }
+
+    function App() {
+      return (
+        <>
+          <Nav/>
+          <Hero/>
+          <About/>
+          <Experience/>
+          <Skills/>
+          <Certifications/>
+          <Education/>
+          <Footer/>
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  </script>
+</body>
+</html>
